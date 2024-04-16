@@ -44,13 +44,14 @@ return res.status(401).json({message:"invalid credential"})
 //generate cookie token and send to the user
 const age = 1000*60*60*24*7
 const token = jwt.sign({
-   id:user.id
-},process.env.JWT_SERCRET_KEY,{expiresIn:age})
+   id: user.id,
+},process.env.JWT_SECRET_KEY,{expiresIn:age})
+const{password:userPassword, ...userInfo}=user
 
 res.cookie("token",token,{
 httpOnly: true,
 maxAge: age
-}).status(200).json({message:"success full login"})
+}).status(200).json(userInfo)
 
     }
     catch(err){
@@ -67,5 +68,8 @@ maxAge: age
 
 }
 export const logout = (req,res)=>{
+    res.clearCookie("token")
+    res.status(200).json({message:"successfully logged out"})
+    
 
 }
